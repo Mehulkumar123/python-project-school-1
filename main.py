@@ -53,7 +53,7 @@ def answer_question(query, data_set):
         if manual_input.lower() == "yes":
             manual_answer = input("What is the answer to the question: ")
             data_set[query] = manual_answer
-            with open("data_set.txt", "a") as f:
+            with open("data_set.txt", "a", encoding="utf-16") as f:
                 f.write(f"{query}:{manual_answer}\n")
             return (manual_answer, False)
         return ("Sorry, I couldn't find an answer to your question.", False)
@@ -96,6 +96,6 @@ while True:
 
     for char in answer:
         print(colored(char, "yellow") if not is_data_set else colored(char, "green"), end="", flush=True)
-        time.sleep(random.uniform(0.01, 0.03))
+        # time.sleep(random.uniform(0.01, 0.03))
     print("\n")
 
