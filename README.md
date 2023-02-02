@@ -1,21 +1,22 @@
 # python-project-school-1
-This code is a question-answering chatbot that retrieves
-information based on the user's input. If the answer to 
-the user's question is found in the stored data set, the
-bot returns the answer. If not, it searches the DuckDuckGo
-Instant Answer API for an answer. If no answer is found 
-there, the bot either suggests a closest match to the user's 
-question or asks the user if they would like to add an answer.
-The data set is stored in a file, and the bot saves any new 
-answers to the data set after each search.
+This code implements a Question and Answer Program. It first
+checks if the user's question is already in the data set, which
+is a dictionary stored in a text file. If it is, it returns
+the answer immediately. If not, it checks if the user is asking 
+a math question and calculates the result using the eval function
+if the question is a valid expression. If the answer is not in
+the data set or a math question, the code makes a request to the 
+DuckDuckGo Instant Answer API, which returns a JSON object containing
+information about the user's query. The code then extracts the 
+abstract text, which is the answer to the user's question. If
+there is no answer, the code checks if there is a similar question
+in the data set and suggests the closest match, or returns a
+default message if there is no similar question. Finally, the
+code displays the answer with a typing animation. The user can
+exit the program by typing "exit".
 
-The chatbot is also able to categorize questions
-based on their subject matter and store the question and 
-answer under the relevant subject category. The data set is 
-saved to a text file and loaded from it each time the program runs.
 This script uses the following libraries:
 
-Library used in this project.
 Requests: to make HTTP requests to the DuckDuckGo Instant Answer API.
 re (regular expressions): to match the mathematical expressions.
 datetime: to display the current date and time.
