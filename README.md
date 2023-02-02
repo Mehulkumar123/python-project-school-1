@@ -1,26 +1,28 @@
 # python-project-school-1
-This is a Question and Answer program that allows
-a user to ask questions and receive answers. If the 
-answer is not found in the locally stored data set,
-it will query the DuckDuckGo Instant Answer API to
-retrieve an answer. The answer is then added to the
-data set for future use. The program also displays
-fun facts randomly generated from the facts module.
-The answers are displayed with a typing animation 
-and color-coded based on whether the answer came 
-from the data set (green) or from the DuckDuckGo 
-API (yellow). The program continues to prompt the 
-user for questions until "exit" is entered.
+This code is a question-answering chatbot that retrieves
+information based on the user's input. If the answer to 
+the user's question is found in the stored data set, the
+bot returns the answer. If not, it searches the DuckDuckGo
+Instant Answer API for an answer. If no answer is found 
+there, the bot either suggests a closest match to the user's 
+question or asks the user if they would like to add an answer.
+The data set is stored in a file, and the bot saves any new 
+answers to the data set after each search.
 
+The chatbot is also able to categorize questions
+based on their subject matter and store the question and 
+answer under the relevant subject category. The data set is 
+saved to a text file and loaded from it each time the program runs.
 This script uses the following libraries:
 
-requests for making HTTP requests
-re for regular expression operations
-datetime for working with dates and times
-ast for string literal evaluation
-time for time-related functions
-random for generating random numbers
-loading for a custom loading animation
-facts for a custom fun facts generator
-fuzzywuzzy for fuzzy string matching
-termcolor for adding color to text output.
+Library used in this project.
+Requests: to make HTTP requests to the DuckDuckGo Instant Answer API.
+re (regular expressions): to match the mathematical expressions.
+datetime: to display the current date and time.
+ast (abstract syntax trees): to evaluate the mathematical expressions.
+time: to display the loading animation.
+random: to generate random fun facts.
+loading: a custom library for the loading animation.
+facts: a custom library to generate fun facts.
+fuzzywuzzy: to find the closest match between the input question and the questions in the data set.
+termcolor: to color the text in the terminal.
