@@ -1,19 +1,19 @@
 # python-project-school-1
-This code implements a Question and Answer Program. It first
-checks if the user's question is already in the data set, which
-is a dictionary stored in a text file. If it is, it returns
-the answer immediately. If not, it checks if the user is asking 
-a math question and calculates the result using the eval function
-if the question is a valid expression. If the answer is not in
-the data set or a math question, the code makes a request to the 
-DuckDuckGo Instant Answer API, which returns a JSON object containing
-information about the user's query. The code then extracts the 
-abstract text, which is the answer to the user's question. If
-there is no answer, the code checks if there is a similar question
-in the data set and suggests the closest match, or returns a
-default message if there is no similar question. Finally, the
-code displays the answer with a typing animation. The user can
-exit the program by typing "exit".
+This code implements a simple question and answer program. The program first
+checks if the user's question is already in the data set, which is loaded from 
+a text file "data_set.txt". If the question is in the data set, the answer is returned.
+If the answer is not in the data set, the program checks if the user is asking a math
+question. If the user is asking a math question, the program evaluates the expression
+using the ast.literal_eval function.
+If the answer is still not found, the program searches 
+for an answer using the DuckDuckGo Instant Answer API and if 
+that fails, it uses Wikipedia's API. If the answer is still 
+not found, the program asks the user if they would like to 
+manually add the answer to the data set.
+Finally, the program outputs the answer with a typing animation
+and a yellow color if the answer was not found in the data set 
+and a green color if it was. The user can ask as many questions
+as they want by repeating this process until they type "exit".
 
 This script uses the following libraries:
 
