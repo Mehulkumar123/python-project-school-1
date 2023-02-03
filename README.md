@@ -15,6 +15,29 @@ and a yellow color if the answer was not found in the data set
 and a green color if it was. The user can ask as many questions
 as they want by repeating this process until they type "exit".
 
+
+The code imports several modules including requests,
+wikipedia, facts, process, fuzz, termcolor and some custom
+modules loading and animation.
+The main function answer_question takes a query and a 
+data_set as input, and tries to find the answer from the 
+data_set, a mathematical expression or an API call to 
+DuckDuckGo. If the answer is not found, it uses Wikipedia
+to search for the answer, and if it still can't find the
+answer, it uses the fuzzywuzzy library to check if there's
+a similar query in the data_set. The query and answer are 
+added to the data_set if the answer is not found in it.
+The program loads a data_set from a file data_set.txt, 
+which contains previously asked questions and their 
+answers separated by a colon. If the file is not
+found, an empty file is created.
+A loading animation is displayed, followed by a
+welcome message and a fun fact. The program then 
+enters an infinite loop to ask the user for questions.
+If the user types 'exit', the program breaks out of the loop
+. The answer to the question is obtained using the answer_question 
+function, and displayed with a typing animation.
+
 This script uses the following libraries:
 
 Requests: to make HTTP requests to the DuckDuckGo Instant Answer API.
