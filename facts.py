@@ -171,8 +171,10 @@ fun_facts = [
     ("Did you know that the India-Pakistan partition in 1947 is the largest mass migration in human history, with over 15 million people displaced.", "Yes, it is a fact"),
 ]
 
-
 def generate_fun_fact():
+    """
+    Generates a random fun fact from the list 'fun_facts' and returns it with a 
+    colored 'Fun Fact' prefix.
+    """
     fact, category = random.choice(fun_facts)
     return colored(f"\nFun Fact ({fact}): {category}", "magenta")
-

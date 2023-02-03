@@ -1,101 +1,107 @@
+import time
+import datetime
 import requests
 import re
 import ast
-import time
 import random
-import datetime
 import wikipedia
+import animation as ani
 import loading as load
-import facts as Fact
 from datetime import datetime
+import facts as Fact
 from fuzzywuzzy import process, fuzz
 from termcolor import colored
 
+# Function to answer questions, it takes the query and a data_set as input
 def answer_question(query, data_set):
-    # Check if the answer is already in the data set
+    
+    # Check if the query is already present in the data_set
     if query in data_set:
         return (data_set[query], True)
-
-    # Check if the user is asking a math question
+    
+    # Check if the query is a mathematical expression
     match = re.search(r"^\s*(\d+\s*[+\-*/%^]\s*\d+)\s*$", query)
     if match:
         try:
-            # Evaluate the mathematical expression and return the result
             expression = match.group(1)
             result = str(ast.literal_eval(expression))
             return (result, False)
         except:
-            return ("Sorry, I couldn't understand your question.", False)
-
-    # If the answer is not in the data set or a math question, search the DuckDuckGo Instant Answer API
-    response = requests.get(f"http://api.duckduckgo.com/?q={query}&format=json")
-    data = response.json()
-
-    # Extract the answer from the API response
+            raise ValueError("Couldn't evaluate the expression.")
+    
+    # Call the DuckDuckGo API to get the answer to the query
+    try:
+        response = requests.get(f"http://api.duckduckgo.com/?q={query}&format=json")
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        raise ValueError("Error making the API request.") from e
+    
+    # Get the abstract text from the API response
     answer = data.get("AbstractText")
-
-    # If there is no answer, try searching on Wikipedia
+    
+    # If the abstract text is not present, use Wikipedia to get the answer
     if not answer:
         try:
             answer = wikipedia.summary(query)
-        except:
-            pass
-
-    # If there is still no answer, return a default message
+        except wikipedia.exceptions.DisambiguationError as e:
+            raise ValueError("Multiple Wikipedia pages found.") from e
+        except wikipedia.exceptions.PageError as e:
+            raise ValueError("Wikipedia page not found.") from e
+    
+    # If the answer is still not present, check if there's a query that's similar in the data_set
     if not answer:
-        # Suggest a query based on the closest match in the data set
         closest_match = process.extractOne(query, data_set.keys(), scorer=fuzz.token_sort_ratio)
         if closest_match[1] >= 60:
             return (f"Did you mean '{closest_match[0]}'?\n{data_set[closest_match[0]]}", False)
-        
-        print("Sorry, I couldn't find an answer to your question. Would you like to add the answer manually? (yes/no):")
-        manual_input = input()
-        if manual_input.lower() == "yes":
-            manual_answer = input("What is the answer to the question: ")
-            data_set[query] = manual_answer
-            with open("data_set.txt", "a", encoding="utf-16") as f:
-                f.write(f"{query}:{manual_answer}\n")
-            return (manual_answer, False)
-        return ("Sorry, I couldn't find an answer to your question.", False)
-
-    # Add the answer to the data set for future use
+        raise ValueError("Couldn't find an answer to the question.")
+    
+    # Update the data_set with the new query and answer
     data_set[query] = answer
     with open("data_set.txt", "a") as f:
         f.write(f"{query}:{answer}\n")
-
     return (answer, False)
 
-# Load the data set from the text file
+# Initialize the data_set
 data_set = {}
+
+# Try to open the data_set.txt file for reading
 try:
     with open("data_set.txt", "r") as f:
+        # For each line in the file, split the line by the colon separator and add the query and answer to the data_set dictionary
         for line in f:
             query, answer = line.strip().split(":")
             data_set[query] = answer
-except FileNotFoundError:
+# If the file is not found, create an empty file
+except FileNotFoundError as e:
     open("data_set.txt", "w").close()
 
+# Call the loading_animation function from the loading module to show a loading animation
+load.loading_animation(15)
 
-def print_with_typing_animation(summary):
-    delay = 0.005
-    for char in summary:
-        print(char, end="", flush=True)
-        time.sleep(delay)
+# Print a welcome message and a fun fact using the print_with_typing_animation function from the animation module
+ani.print_with_typing_animation(colored(f"Welcome to the Question and Answer Program! ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})", "magenta"))
+ani.print_with_typing_animation(Fact.generate_fun_fact())
 
-print_with_typing_animation(colored(f"Welcome to the Question and Answer Program! ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})", "magenta"))
-print_with_typing_animation(Fact.generate_fun_fact())
-
-# Example usage
+# Infinite loop to ask the user for questions
 while True:
-    question = input("\nWhat's your question? (type 'exit' to quit): ")
-
-    if question.lower() == "exit":
-        break
-
-    answer, is_data_set = answer_question(question, data_set)
-
-    for char in answer:
-        print(colored(char, "yellow") if not is_data_set else colored(char, "green"), end="", flush=True)
-        # time.sleep(random.uniform(0.01, 0.03))
-    print("\n")
-
+    # Try block to catch any exceptions that may occur
+    try:
+        # Ask the user for their question
+        question = input("\nWhat's your question? (type 'exit' to quit): ")
+        # If the user types 'exit', break out of the loop
+        if question.lower() == "exit":
+            break
+        # Get the answer to the question and a flag indicating whether the answer is from the data_set or not
+        answer, is_data_set = answer_question(question, data_set)
+        # Loop through each character in the answer
+        for char in answer:
+            # Print the character, color-coded based on whether it's from the data_set or not
+            print(colored(char, "yellow") if not is_data_set else colored(char, "green"), end="", flush=True)
+            # Add a random delay to simulate typing
+            time.sleep(random.uniform(0, 0.0001))
+        # Print a newline character
+        print("\n")
+    # If an exception occurs, print an error message
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
